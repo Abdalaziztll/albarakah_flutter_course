@@ -1,37 +1,63 @@
+import 'package:dio/dio.dart';
 
-main() {
-  Animal cat = Animal(name: 'katy', color: 'white',position: Position(x: 2, y: 2));
-  print(cat.position.y);
-  // cat.jump(20);
-  print(cat.position.y);
+import 'comment_model.dart';
+import 'user_model.dart';
 
-  Animal cat1 =Animal(name: 'katy', color: 'white', position: Position(x: 2, y: 2));
+main() async {
+  dynamic dataResult = await logIn('kminchelle','0lelplR');
+  print(dataResult);
+  // List result = await getData();
 
-  if(cat==cat1){
-    print('Match');
-  }
-  else {
-    print('Not Match');
+  // ? Anouther Way
+
+  // List<CommentModel> comments = List.generate(
+  //     result.length, (index) => CommentModel.fromMap(result[index]));
+
+  // print(comments[1].email);
+
+// ? Best Practice (Nadim)
+  // result.forEach((element) {
+  //   comments.add(CommentModel.fromMap(element));
+  // });
+  // print(result);
+
+  // ? AlAA Way
+  // TODO : HomeWork for ALaa
+  // comments.addAll(CommentModel.fromMap(result) );
+
+  // for (var i = 0; i < result.length; i++) {
+  //   // ? MHD way
+  //   // dynamic  comment =CommentModel.fromMap(result[i]);
+  //   //  comments.add(comment);
+  //   // ? best practice
+  //   // comments.add(CommentModel.fromMap(result[i]));
+  // }
+
+  // print(comments);
+}
+
+getData() async {
+  Dio dio = Dio();
+
+  Response response =
+      await dio.get('https://jsonplaceholder.typicode.com/comments');
+
+  if (response.statusCode == 200) {
+    return response.data;
+  } else {
+    return 'Error';
   }
 }
 
-class Animal {
-  String name;
-  String color;
-  
-  Position position;
+logIn(String username, String password) async {
+  Dio dio = Dio();
+  UserModel req = UserModel(username: username, password: password);
+  Response response =
+      await dio.post('https://dummyjson.com/auth/login', data: req.toJson());
 
-  Animal({required this.name, required this.color, required this.position});
-
-  jump(int height){
-   this.position.y = this.position.y + height;
+  if (response.statusCode == 200) {
+    return response.data;
+  } else {
+    return 'Error';
   }
-}
-
-
-class Position {
-  int x;
-  int y;
-  Position({required this.x, required this.y});
-
 }
