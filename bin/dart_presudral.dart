@@ -1,63 +1,129 @@
-import 'package:dio/dio.dart';
+main() {
 
-import 'comment_model.dart';
-import 'user_model.dart';
 
-main() async {
-  dynamic dataResult = await logIn('kminchelle','0lelplR');
-  print(dataResult);
-  // List result = await getData();
+  Car BMW = Car.setupCar(
+      releaseTime: 2008, color: 'red', id: 2, model: 'BMW M5', name: 'Fareza');
+  print(BMW.ABS);
 
-  // ? Anouther Way
+  BMW.stopUsingABS();  // ? I am try to stop
 
-  // List<CommentModel> comments = List.generate(
-  //     result.length, (index) => CommentModel.fromMap(result[index]));
+  Bus bus = Bus(
+    countOfPeople: 20,
+      name: 'Harsho',
+      model: 'Suzuki',
+      color: 'green',
+      id: 1,
+      ABS: false,
+      releaseDate: 1899);
 
-  // print(comments[1].email);
 
-// ? Best Practice (Nadim)
-  // result.forEach((element) {
-  //   comments.add(CommentModel.fromMap(element));
-  // });
-  // print(result);
+bus.stopUsingABS(); // ?  I am a bus sun of the bus
+  // Bus harshoBus = Bus(name: 'Harsho', model: 'Suzuki', color: 'green', id: 1, ABS: false, releaseDate: 1899);
+  Car bus1 = Bus(
+      countOfPeople: 20,
+      name: 'name',
+      model: 'model',
+      color: 'color',
+      id: 1,
+      ABS: true,
+      releaseDate: 2009);
 
-  // ? AlAA Way
-  // TODO : HomeWork for ALaa
-  // comments.addAll(CommentModel.fromMap(result) );
+bus1.stopUsingABS();  // ? I am a bus sun of the bus
 
-  // for (var i = 0; i < result.length; i++) {
-  //   // ? MHD way
-  //   // dynamic  comment =CommentModel.fromMap(result[i]);
-  //   //  comments.add(comment);
-  //   // ? best practice
-  //   // comments.add(CommentModel.fromMap(result[i]));
-  // }
-
-  // print(comments);
+  // print(harshoBus.name);
 }
 
-getData() async {
-  Dio dio = Dio();
+class Car {
+  String name;
+  String model;
+  String color;
+  int releaseDate;
+  int id;
+  bool ABS;
 
-  Response response =
-      await dio.get('https://jsonplaceholder.typicode.com/comments');
+  Car(
+      {required this.name,
+      required this.model,
+      required this.color,
+      required this.id,
+      required this.ABS,
+      required this.releaseDate});
 
-  if (response.statusCode == 200) {
-    return response.data;
-  } else {
-    return 'Error';
+  stopUsingABS() {
+    print('I am try to stop');
+  }
+
+  factory Car.setupCar(
+      {required int releaseTime,
+      required String name,
+      required String model,
+      required String color,
+      required int id}) {
+    if (releaseTime > 2007) {
+      return Car(
+          name: name,
+          model: model,
+          color: color,
+          id: id,
+          ABS: true,
+          releaseDate: releaseTime);
+    } else {
+      return Car(
+          name: name,
+          model: model,
+          color: color,
+          id: id,
+          ABS: false,
+          releaseDate: releaseTime);
+    }
   }
 }
 
-logIn(String username, String password) async {
-  Dio dio = Dio();
-  UserModel req = UserModel(username: username, password: password);
-  Response response =
-      await dio.post('https://dummyjson.com/auth/login', data: req.toJson());
+class Bus extends Car {
+  int countOfPeople;
+  Bus(
+      {required super.name,
+      required super.model,
+      required super.color,
+      required this.countOfPeople,
+      required super.id,
+      required super.ABS,
+      required super.releaseDate});
 
-  if (response.statusCode == 200) {
-    return response.data;
-  } else {
-    return 'Error';
+    @override
+    stopUsingABS() {
+      print('I am a bus, son of the bus');
   }
 }
+
+abstract class Creature  {
+ 
+  
+  eat();
+  drink();
+  helperMehod(){
+    print('object');
+  }
+}
+
+class Human extends Creature{
+
+  @override
+  drink() {
+    // TODO: implement drink
+    throw UnimplementedError();
+  }
+
+  @override
+  eat() {
+    // TODO: implement eat
+    throw UnimplementedError();
+  }
+
+}
+
+ final class Animal {
+
+ }
+
+//  class Cat extends Animal {}
