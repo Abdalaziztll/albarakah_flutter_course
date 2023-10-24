@@ -1,129 +1,50 @@
-main() {
+import 'package:dio/dio.dart';
 
+import 'usermodel.dart';
 
-  Car BMW = Car.setupCar(
-      releaseTime: 2008, color: 'red', id: 2, model: 'BMW M5', name: 'Fareza');
-  print(BMW.ABS);
+main() async {
+ await logIn('Ahmad','Doctor');
 
-  BMW.stopUsingABS();  // ? I am try to stop
+  Future.delayed(Duration(seconds: 3));
 
-  Bus bus = Bus(
-    countOfPeople: 20,
-      name: 'Harsho',
-      model: 'Suzuki',
-      color: 'green',
-      id: 1,
-      ABS: false,
-      releaseDate: 1899);
-
-
-bus.stopUsingABS(); // ?  I am a bus sun of the bus
-  // Bus harshoBus = Bus(name: 'Harsho', model: 'Suzuki', color: 'green', id: 1, ABS: false, releaseDate: 1899);
-  Car bus1 = Bus(
-      countOfPeople: 20,
-      name: 'name',
-      model: 'model',
-      color: 'color',
-      id: 1,
-      ABS: true,
-      releaseDate: 2009);
-
-bus1.stopUsingABS();  // ? I am a bus sun of the bus
-
-  // print(harshoBus.name);
+ await getUser();
 }
 
-class Car {
-  String name;
-  String model;
-  String color;
-  int releaseDate;
-  int id;
-  bool ABS;
+late String token;
 
-  Car(
-      {required this.name,
-      required this.model,
-      required this.color,
-      required this.id,
-      required this.ABS,
-      required this.releaseDate});
+logIn(String name, String job) async {
+  Dio dio = Dio();
+  UserModel user = UserModel(name: name, job: job);
 
-  stopUsingABS() {
-    print('I am try to stop');
-  }
+  Response response =
+      await dio.post('http://localhost:3000/users/add', data: user.toJson());
 
-  factory Car.setupCar(
-      {required int releaseTime,
-      required String name,
-      required String model,
-      required String color,
-      required int id}) {
-    if (releaseTime > 2007) {
-      return Car(
-          name: name,
-          model: model,
-          color: color,
-          id: id,
-          ABS: true,
-          releaseDate: releaseTime);
-    } else {
-      return Car(
-          name: name,
-          model: model,
-          color: color,
-          id: id,
-          ABS: false,
-          releaseDate: releaseTime);
-    }
-  }
+      if (response.statusCode == 201 ){
+        print(response.data['token']);
+        token = response.data['token'];
+        return response.data['token'];
+      }
+      else {
+        print("Error");
+      }
 }
 
-class Bus extends Car {
-  int countOfPeople;
-  Bus(
-      {required super.name,
-      required super.model,
-      required super.color,
-      required this.countOfPeople,
-      required super.id,
-      required super.ABS,
-      required super.releaseDate});
+// https://dummyjson.com/
+getUser()async{
 
-    @override
-    stopUsingABS() {
-      print('I am a bus, son of the bus');
+Dio dio = Dio();
+Response response = await dio.get('http://localhost:3000/users/add',
+options: Options(
+  headers: {
+    "authorization": "Bearar "+token
   }
+));
+
+if (response.statusCode == 200){
+  print(response.data);
+  return response.data;
 }
-
-abstract class Creature  {
- 
-  
-  eat();
-  drink();
-  helperMehod(){
-    print('object');
-  }
+else{
+  return 'Error';
 }
-
-class Human extends Creature{
-
-  @override
-  drink() {
-    // TODO: implement drink
-    throw UnimplementedError();
-  }
-
-  @override
-  eat() {
-    // TODO: implement eat
-    throw UnimplementedError();
-  }
-
 }
-
- final class Animal {
-
- }
-
-//  class Cat extends Animal {}
