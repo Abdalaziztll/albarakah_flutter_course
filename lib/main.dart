@@ -1,158 +1,124 @@
+import 'package:controller_types/config/router/go_route.dart';
+import 'package:controller_types/model/cart_model.dart';
+import 'package:controller_types/service/cartd_service.dart';
+import 'package:controller_types/service/graphql/graphql.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
-main() {
+main() async{
+  await initHiveForFlutter();
+  
+ await getData();
   runApp(MyApp());
 }
 
-PageController controller = PageController();
-
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
-  Widget build(BuildContext contex) {
-    return MaterialApp(
-      home: SecondPage(),
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routerConfig: router,
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              color: Color.fromARGB(208, 111, 69, 4),
-              width: double.maxFinite,
-              // height: ,
-            ),
-            Positioned(
-              top: 100,
-              child: Container(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: 100,
-                          height: 50,
-                          color: Colors.orange,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: 100,
-                          height: 50,
-                          color: Colors.orange,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: 100,
-                          height: 50,
-                          color: Colors.orange,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: 100,
-                          height: 50,
-                          color: Colors.orange,
-                        ),
-                      ),
-                    ],
-                  ),
+    return FutureBuilder(
+        future: CardService().getCarts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            dynamic temp = snapshot.data;
+            CardModel cards = CardModel.fromMap(temp.data);
+
+            return DefaultTabController(
+              length: cards.Carts.length,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text('TabBar Example'),
+                  bottom: TabBar(
+                      tabs: List.generate(
+                          cards.Carts.length,
+                          (index) => Tab(
+                                icon: Icon(Icons.leaderboard),
+                              ))),
+                ),
+                body: TabBarView(
+                  children:
+                      List.generate(cards.Carts.length, (index) => Scaffold()),
                 ),
               ),
-            ),
-            ListTile(
-              // ? use with material 3
-
-              // tileColor: Colors.blue,
-              isThreeLine: true,
-              title: Text('Hello World'),
-              leading: FlutterLogo(),
-              trailing: Badge(
-                isLabelVisible: true,
-                label: Text('+999'),
-                child: Icon(Icons.facebook)),
-              subtitle: Text(
-                  'Eu occaecat eu et laborum sit laborum nostrud ipsum ea labore esse.'),
-            )
-          ],
-        ),
-      ),
-    );
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }
 
-List<String> names = ['Ahmad','Majd','Nadim','Rabee','Yaman','Madeh','Ahmad','Majd','Nadim','Rabee','Yaman','Madeh','Ahmad','Majd','Nadim','Rabee','Yaman','Madeh','Ahmad','Majd','Nadim','Rabee','Yaman','Madeh','Ahmad','Majd','Nadim','Rabee','Yaman','Madeh'];
-
-class SecondPage extends StatelessWidget {
-  const SecondPage({super.key});
+class HomePage1 extends StatefulWidget {
+  const HomePage1({super.key});
 
   @override
+  State<HomePage1> createState() => _HomePageState1();
+}
+
+class _HomePageState1 extends State<HomePage1> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        // height: 300,
-        child: ListView.separated(
-          // childrenDelegate: ,
-          separatorBuilder: (context, index) =>Divider(
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('TabBar Example'),
+          bottom: TabBar(tabs: [
+            Icon(Icons.percent),
+            Icon(Icons.percent),
+            Icon(Icons.percent)
+          ]),
+        ),
+        body: TabBarView(children: [
+          Container(
             color: Colors.red,
-            indent: 20,
-            endIndent: 30,
-            thickness: 10,
-            // height: 100,
           ),
-          // cacheExtent: 300,
-          // itemExtent: 300,
-          // scrollDirection: Axis.horizontal,
-          physics: BouncingScrollPhysics(),
-          itemCount: names.length,
-          // itemBuilder: (context, index) => Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: CircleAvatar(child: Text(index.toString()),),
-          // ),
-          itemBuilder: (context, index) => ListTile(
-            // tileColor: Colors.red,
-            isThreeLine: true,
-            title: Text(names[index]),
-            leading: CircleAvatar(child: Text(index.toString()),),
-            trailing: Badge(
-              // smallSize: 10,
-              // isLabelVisible: ,
-              // alignment: Alignment.topLeft,
-              offset: Offset(-20, -8),
-              label: Text('+999'),
-              child: Icon(Icons.facebook)),
-            subtitle: Text(
-                'Eu occaecat eu et laborum sit laborum nostrud ipsum ea labore esse.'),
+          Container(
+            color: Colors.blue,
           ),
-        ),
+          InkWell(
+            onTap: () {
+              context.go('/testpage');
+            },
+            child: Container(
+              color: Colors.green,
+            ),
+          )
+        ]),
       ),
     );
   }
 }
 
-
-class ThirdPage extends StatelessWidget {
-  const ThirdPage({super.key});
+class TestPage extends StatelessWidget {
+  const TestPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Align(
-        alignment: Alignment.centerRight,
-        child: FlutterLogo(size: 200,)),
+      body: Center(
+        child: FlutterLogo(),
+      ),
     );
   }
 }
