@@ -15,149 +15,42 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: (config.get<SharedPreferences>().getString('title') == null)
-            ? LogInPage()
+            ? HelloPage()
             : HomePage());
   }
 }
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-int selectindex = 2;
-
-class _HomePageState extends State<HomePage> {
-  @override
   Widget build(BuildContext context) {
+    TextEditingController name = TextEditingController();
     return Scaffold(
-      body: pages[selectindex],
-      bottomNavigationBar: NavigationBar(
-          selectedIndex: selectindex,
-          onDestinationSelected: (value) {
-            setState(() {
-              selectindex = value;
-            });
-          },
-          destinations: [
-            NavigationDestination(icon: Icon(Icons.home), label: 'label'),
-            NavigationDestination(icon: Icon(Icons.home), label: 'label'),
-            NavigationDestination(icon: Icon(Icons.home), label: 'label'),
-          ]),
-    );
-  }
-}
-
-List<Widget> pages = [
-  Scaffold(
-    backgroundColor: Colors.red,
-  ),
-  Scaffold(
-    backgroundColor: Colors.blue,
-  ),
-  ExamplePage()
-];
-
-class ExamplePage extends StatelessWidget {
-  const ExamplePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: Container(),
-          title: Text(
-              config.get<SharedPreferences>().getString('title') ?? "Hello"),
-          bottom: TabBar(tabs: [
-            Tab(text: 'Cats'),
-            Tab(text: 'Dogs'),
-            Tab(text: 'Horse'),
-          ]),
-        ),
-        body: TabBarView(children: [
-          Center(
-            child: FlutterLogo(),
-          ),
-          Center(
-            child: FlutterLogo(size: 200),
-          ),
-          Center(
-            child: FlutterLogo(
-              size: 400,
-            ),
-          )
-        ]),
-      ),
-    );
-  }
-}
-
-class LogInPage extends StatelessWidget {
-  const LogInPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController username = TextEditingController();
-
-    TextEditingController password = TextEditingController();
-    return Center(
-      child: Scaffold(
-        body: Column(
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: SizedBox(
-                width: 400,
-                child: TextField(
-                  controller: username,
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
+            TextField(
+              controller: name,
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: SizedBox(
-                width: 400,
-                child: TextField(
-                  obscureText: true,
-                  controller: password,
-                  decoration: InputDecoration(
-                    labelText: 'pasword',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
+            ElevatedButton(
+                onPressed: () {
+                  config.get<SharedPreferences>().setString('title', name.text);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    new SnackBar(
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                      duration: Duration(seconds: 2),
+                      showCloseIcon: true,
+                      closeIconColor: Colors.red,
+                      content: Text(
+                          'Dolore mollit nulla tempor deserunt consequat culpa dolore id dolore et aliquip deserunt mollit.'),
                     ),
-                  ),
-                ),
-              ),
-            ),
-            InkWell(
-                onTap: () async {
-                  print('${username.text} + ${password.text}');
-                  if (username.text.contains('a') &&
-                      password.text.contains('123321')) {
-                    // whatever = username.text;
-                    config
-                        .get<SharedPreferences>()
-                        .setString('title', username.text);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(),
-                      ),
-                    );
-                  }
+                  );
                 },
-                child: FlutterLogo())
+                child: Text('WhatEver'))
           ],
         ),
       ),
@@ -165,4 +58,19 @@ class LogInPage extends StatelessWidget {
   }
 }
 
-// String whatever = "";
+class HelloPage extends StatelessWidget {
+  const HelloPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title:
+            Text(config.get<SharedPreferences>().getString('title') ?? "Hello"),
+      ),
+      body: Center(
+        child: Text(config.get<DateTime>().minute.toString()),
+      ),
+    );
+  }
+}

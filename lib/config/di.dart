@@ -5,4 +5,6 @@ GetIt config = GetIt.instance;
 
 setup() async {
   config.registerSingleton(await SharedPreferences.getInstance());
+  config.registerFactory(() => DateTime.now());
+  // config.re
 }
