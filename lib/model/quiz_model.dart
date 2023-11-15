@@ -4,23 +4,23 @@ import 'package:flutter/foundation.dart';
 
 class QuestionModel {
   String question;
-  num time;
+  num availableTime;
   List<AnswerModel> answers;
   QuestionModel({
     required this.question,
-    required this.time,
+    required this.availableTime,
     required this.answers,
   });
 
   QuestionModel copyWith({
     String? question,
-    num? time,
-    List<AnswerModel>? answers,
+    num? availableTime,
+    List<AnswerModel>? answer,
   }) {
     return QuestionModel(
       question: question ?? this.question,
-      time: time ?? this.time,
-      answers: answers ?? this.answers,
+      availableTime: availableTime ?? this.availableTime,
+      answers: answer ?? this.answers,
     );
   }
 
@@ -28,8 +28,8 @@ class QuestionModel {
     final result = <String, dynamic>{};
 
     result.addAll({'question': question});
-    result.addAll({'time': time});
-    result.addAll({'answers': answers.map((x) => x.toMap()).toList()});
+    result.addAll({'availableTime': availableTime});
+    result.addAll({'answer': answers.map((x) => x.toMap()).toList()});
 
     return result;
   }
@@ -37,9 +37,9 @@ class QuestionModel {
   factory QuestionModel.fromMap(Map<String, dynamic> map) {
     return QuestionModel(
       question: map['question'] ?? '',
-      time: map['time'] ?? 0,
+      availableTime: map['availableTime'] ?? 0,
       answers: List<AnswerModel>.from(
-          map['answers']?.map((x) => AnswerModel.fromMap(x))),
+          map['answer']?.map((x) => AnswerModel.fromMap(x))),
     );
   }
 
@@ -50,7 +50,7 @@ class QuestionModel {
 
   @override
   String toString() =>
-      'QuestionModel(question: $question, time: $time, answers: $answers)';
+      'QuestionModel(question: $question, availableTime: $availableTime, answer: $answers)';
 
   @override
   bool operator ==(Object other) {
@@ -58,12 +58,13 @@ class QuestionModel {
 
     return other is QuestionModel &&
         other.question == question &&
-        other.time == time &&
+        other.availableTime == availableTime &&
         listEquals(other.answers, answers);
   }
 
   @override
-  int get hashCode => question.hashCode ^ time.hashCode ^ answers.hashCode;
+  int get hashCode =>
+      question.hashCode ^ availableTime.hashCode ^ answers.hashCode;
 }
 
 class AnswerModel {
