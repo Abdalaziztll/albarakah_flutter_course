@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:getx_example/controller/comment_contoller.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,56 +9,139 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: HomePage(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: GridViewExample(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(CommentContoller());
-    return Scaffold(
-      appBar: AppBar(
-          title: Obx(() => Text('count ${controller.counter.toString()}'))),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Obx(() => controller.isLoading.isFalse
-                ? CircularProgressIndicator()
-                : Text(controller.data.toString())),
-            ElevatedButton(
-                onPressed: () {
-                  controller.increamnt();
-                  // Get.to(FirstPage());
-                  controller.getData();
-                  // Get.dialog(FlutterLogo());
+  State<HomePage> createState() => _HomePageState();
+}
 
-                  // ScaffoldMessenger.of(context).showSnackBar(new SnackBar(content: content))
-                  Get.showSnackbar(new GetSnackBar(message: 'Hello Wolrd'));
-                },
-                child: Text('add')),
-          ],
-        ),
+class _HomePageState extends State<HomePage> {
+  bool isExpanaded = true;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: ListView.builder(
+      itemCount: 10,
+      itemBuilder: (context, index) => ExpansionTile(
+          initiallyExpanded: (index == 1) ? isExpanaded : !isExpanaded,
+          onExpansionChanged: (value) {
+            setState(() {
+              isExpanaded = !value;
+            });
+          },
+          trailing: InkWell(onTap: () {}, child: Icon(Icons.add)),
+          leading: FlutterLogo(),
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Text('Hello ${index}'),
+          children: [
+            ListTile(
+              title: Text('1'),
+            ),
+            ListTile(
+              title: Text('1'),
+            ),
+            ListTile(
+              title: Text('1'),
+            ),
+          ]),
+    ));
+  }
+}
+
+class SliversExample extends StatefulWidget {
+  const SliversExample({super.key});
+
+  @override
+  State<SliversExample> createState() => _SliversExampleState();
+}
+
+class _SliversExampleState extends State<SliversExample> {
+  double hi = 100;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          FlutterLogo(),
+          Container(
+            child: CustomScrollView(
+              physics: BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  // stretch: true,
+                  // pinned: true,
+                  floating: true,
+                  snap: true,
+                  title: Text('Hello'),
+                  expandedHeight: 200,
+                ),
+                SliverList.builder(
+                  itemCount: 20,
+                  itemBuilder: (context, index) => ListTile(
+                    title: Text(index.toString()),
+                  ),
+                ),
+                // SliverToBoxAdapter(
+                //   child: SizedBox(
+                //     width: double.maxFinite,
+                //     child: ListView.builder(
+                //       scrollDirection: Axis.horizontal,
+                //       itemBuilder: (context, index) => Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: FlutterLogo(
+                //           size: 50,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                SliverList.builder(
+                    itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FlutterLogo(
+                            size: 50,
+                          ),
+                        )),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class FirstPage extends StatelessWidget {
-  const FirstPage({super.key});
+class GridViewExample extends StatelessWidget {
+  const GridViewExample({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Color color = Colors.red;
     return Scaffold(
-      body: Container(
-        child: TextField(
-          controller: TextEditingController(),
+      body: GridView.builder(
+        itemCount: 10,
+        padding: EdgeInsets.all(10),
+        itemBuilder: (context, index) => InkWell(
+          onTap: () {},
+          child: Container(
+            width: 50,
+            height: 50,
+            color: color,
+          ),
         ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 5,
+            mainAxisSpacing: 20,
+            crossAxisCount: 2,
+            crossAxisSpacing: 30),
       ),
     );
   }
