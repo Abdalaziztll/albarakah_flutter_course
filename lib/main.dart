@@ -1,14 +1,9 @@
-import 'package:bloc_session/bloc/event_example.dart';
-import 'package:bloc_session/bloc/manager_example.dart';
-import 'package:bloc_session/bloc/state_example.dart';
-import 'package:bloc_session/view/bloc/login_bloc.dart';
-import 'package:bloc_session/view/login_page.dart';
+import 'package:bloc_session/config/router/route.dart';
+import 'package:bloc_session/config/theme/theme_app.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
-
-  
   runApp(const MyApp());
 }
 
@@ -18,70 +13,49 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home:  LogInPage()
+    return MaterialApp.router(
+      theme: getThemeData(isLight: true),
+      routerConfig: router,
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
-  final String title;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ExampleBloc(),
-      child: Builder(builder: (context) {
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: Text(title),
-          ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'You have pushed the button this many times:',
-                ),
-                BlocBuilder<ExampleBloc, ExampleState>(
-                  builder: (context, state) {
-                    if (state is EditNumber) {
-                      return Text(state.counter.toString());
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          floatingActionButton: Row(
-            children: [
-              FloatingActionButton(
-                onPressed: () {
-                  context.read<ExampleBloc>().add(Increment());
-                },
-                tooltip: 'Increment',
-                child: const Icon(Icons.add),
-              ),
-              FloatingActionButton(
-                onPressed: () {
-                  context.read<ExampleBloc>().add(Decrement());
-                },
-                tooltip: 'decrement',
-                child: const Icon(Icons.minimize),
-              ),
-            ],
-          ),
-        );
-      }),
+    return Scaffold(
+      body: Center(
+        child: IconButton(
+          onPressed: () {
+            context.go('/secondPage');
+          },
+          icon: Icon(Icons.reddit),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(onPressed: () {}, child: Text('eleveted')),
+            TextButton(onPressed: () {}, child: Text('eleveted')),
+            OutlinedButton(onPressed: () {}, child: Text('eleveted'))
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: () {}),
     );
   }
 }
